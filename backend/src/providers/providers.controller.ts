@@ -25,7 +25,12 @@ import { UpdateProviderDto } from './dto/update-provider.dto';
 import { Provider } from './entities/provider.entity';
 import { GetProviderByIdQuery } from './queries/get-provider-by-id.query';
 import { GetProvidersQuery } from './queries/get-providers.query';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Providers')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Controller('providers')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('providers')
 export class ProvidersController {

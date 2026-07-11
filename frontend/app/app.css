@@ -95,6 +95,12 @@ label {
   gap: 16px;
 }
 
+.provider-form {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .field-error {
   color: #b42318;
   font-size: 13px;
@@ -146,6 +152,23 @@ label {
   margin: 0 auto;
   display: grid;
   gap: 18px;
+}
+
+.form-panel {
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 18px;
+}
+
+.form-panel h3 {
+  margin: 0 0 16px;
+}
+
+.form-actions {
+  display: flex;
+  align-items: end;
+  gap: 10px;
 }
 
 .loading,
@@ -213,4 +236,22 @@ tbody tr:last-child td {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+@media (max-width: 760px) {
+  .auth-page,
+  .page-shell {
+    padding: 18px;
+  }
+
+  .app-header,
+  .section-header,
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .provider-form {
+    grid-template-columns: 1fr;
+  }
 }

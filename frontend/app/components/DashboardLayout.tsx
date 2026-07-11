@@ -1,6 +1,7 @@
 import { NavLink } from "react-router";
 
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 type DashboardLayoutProps = {
   title: string;
@@ -9,6 +10,7 @@ type DashboardLayoutProps = {
 
 export function DashboardLayout({ title, children }: DashboardLayoutProps) {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="dashboard-shell">
@@ -31,9 +33,14 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
               {user?.name} - {user?.role}
             </p>
           </div>
-          <button className="secondary" type="button" onClick={logout}>
-            Salir
-          </button>
+          <div className="header-actions">
+            <button className="secondary" type="button" onClick={toggleTheme}>
+              {theme === "dark" ? "Light" : "Dark"}
+            </button>
+            <button className="secondary" type="button" onClick={logout}>
+              Salir
+            </button>
+          </div>
         </header>
 
         <div className="dashboard-content">{children}</div>

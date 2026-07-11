@@ -89,6 +89,12 @@ label {
   color: #667085;
 }
 
+.auth-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 18px;
+}
+
 .form {
   display: grid;
   gap: 16px;
@@ -195,6 +201,11 @@ label {
 .section-header p {
   margin: 6px 0 0;
   color: #667085;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
 }
 
 .dashboard-content {
@@ -396,6 +407,81 @@ tbody tr:last-child td {
   width: 18px;
 }
 
+:root[data-theme="dark"] body {
+  background: #101828;
+  color: #f2f4f7;
+}
+
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select {
+  border-color: #344054;
+  background: #182230;
+  color: #f2f4f7;
+}
+
+:root[data-theme="dark"] label,
+:root[data-theme="dark"] td,
+:root[data-theme="dark"] .kpi-card strong {
+  color: #f2f4f7;
+}
+
+:root[data-theme="dark"] button.secondary {
+  background: #26364d;
+  color: #f2f4f7;
+}
+
+:root[data-theme="dark"] .auth-panel,
+:root[data-theme="dark"] .kpi-card,
+:root[data-theme="dark"] .toolbar,
+:root[data-theme="dark"] .form-panel,
+:root[data-theme="dark"] .dialog,
+:root[data-theme="dark"] .loading,
+:root[data-theme="dark"] .empty-state,
+:root[data-theme="dark"] .table-wrap {
+  border-color: #344054;
+  background: #182230;
+}
+
+:root[data-theme="dark"] .sidebar {
+  background: #0b1220;
+}
+
+:root[data-theme="dark"] .sidebar-nav a.active,
+:root[data-theme="dark"] .sidebar-nav a:hover,
+:root[data-theme="dark"] .sidebar-nav button:hover {
+  background: #1d2939;
+}
+
+:root[data-theme="dark"] .auth-panel p,
+:root[data-theme="dark"] .dashboard-header p,
+:root[data-theme="dark"] .section-header p,
+:root[data-theme="dark"] .kpi-card span,
+:root[data-theme="dark"] .dialog p,
+:root[data-theme="dark"] .loading,
+:root[data-theme="dark"] .empty-state,
+:root[data-theme="dark"] th {
+  color: #c9d2df;
+}
+
+:root[data-theme="dark"] th {
+  background: #202b3c;
+}
+
+:root[data-theme="dark"] th,
+:root[data-theme="dark"] td {
+  border-bottom-color: #344054;
+}
+
+:root[data-theme="dark"] .alert-error {
+  background: #55160c;
+  color: #ffd6cf;
+}
+
+:root[data-theme="dark"] .alert-success {
+  background: #063f2b;
+  color: #b8f7d0;
+}
+
 @media (max-width: 760px) {
   .auth-page,
   .dashboard-main {
@@ -424,6 +510,14 @@ tbody tr:last-child td {
   .form-actions {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1;
   }
 
   .provider-form {

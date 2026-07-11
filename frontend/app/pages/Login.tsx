@@ -4,11 +4,13 @@ import { Navigate, useNavigate } from "react-router";
 import axios from "axios";
 
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import type { LoginCredentials } from "../types/auth";
 
 export function Login() {
   const navigate = useNavigate();
   const { isAuthenticated, login } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
@@ -47,6 +49,11 @@ export function Login() {
   return (
     <main className="auth-page">
       <section className="auth-panel">
+        <div className="auth-actions">
+          <button className="secondary" type="button" onClick={toggleTheme}>
+            {theme === "dark" ? "Light" : "Dark"}
+          </button>
+        </div>
         <h1>Provider Management</h1>
         <p>Inicia sesion para administrar proveedores.</p>
 

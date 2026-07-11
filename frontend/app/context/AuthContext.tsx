@@ -23,6 +23,26 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function isJwtUsable(token: string) {
+  const parts = token.split(".");
+
+  if (parts.length !== 3) {
+    return false;
+  }
+
+  try {
+    const payload = JSON.parse(window.atob(parts[1])) as { exp?: number };
+
+    if (!payload.exp) {
+      return true;
+    }
+
+    return payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -38,6 +58,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   }, []);
 
+  const logoutAndRedirect = useCallback(() => {
+    logout();
+
+    if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+      window.location.assign("/login");
+    }
+  }, [logout]);
+
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
@@ -46,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const savedToken = window.localStorage.getItem("accessToken");
     const savedUser = window.localStorage.getItem("user");
 
-    if (savedToken && savedUser) {
+    if (savedToken && savedUser && isJwtUsable(savedToken)) {
       try {
         setToken(savedToken);
         setUser(JSON.parse(savedUser) as AuthUser);
@@ -54,16 +82,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         window.localStorage.removeItem("accessToken");
         window.localStorage.removeItem("user");
       }
+    } else {
+      window.localStorage.removeItem("accessToken");
+      window.localStorage.removeItem("user");
     }
 
     setIsLoadingSession(false);
   }, []);
 
   useEffect(() => {
-    setUnauthorizedHandler(logout);
+    setUnauthorizedHandler(logoutAndRedirect);
 
     return () => setUnauthorizedHandler(null);
-  }, [logout]);
+  }, [logoutAndRedirect]);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     const response = await authService.login(credentials);

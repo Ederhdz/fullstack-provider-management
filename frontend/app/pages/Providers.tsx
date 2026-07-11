@@ -6,7 +6,15 @@ import { ProviderForm } from "../components/ProviderForm";
 import { ProviderTable } from "../components/ProviderTable";
 import { useAuth } from "../context/AuthContext";
 import * as providerService from "../services/provider.service";
-import type { Provider, ProviderPayload } from "../types/provider";
+import type {
+  Provider,
+  ProviderPayload,
+  ProviderStatus,
+  ProviderType,
+} from "../types/provider";
+
+type ProviderTypeFilter = "ALL" | ProviderType;
+type ProviderStatusFilter = "ALL" | ProviderStatus;
 
 function getErrorMessage(requestError: unknown, fallback: string) {
   if (!axios.isAxiosError(requestError)) {
@@ -30,6 +38,8 @@ export function Providers() {
   const [isCreating, setIsCreating] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState<ProviderTypeFilter>("ALL");
+  const [statusFilter, setStatusFilter] = useState<ProviderStatusFilter>("ALL");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -65,13 +75,20 @@ export function Providers() {
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
   const visibleProviders = providers.filter((provider) => {
-    if (!normalizedSearch) {
-      return true;
+    const matchesSearch =
+      !normalizedSearch ||
+      [provider.businessName, provider.rfc, provider.email].some((value) =>
+        value.toLowerCase().includes(normalizedSearch),
+      );
+
+    if (!matchesSearch) {
+      return false;
     }
 
-    return [provider.businessName, provider.rfc, provider.email].some((value) =>
-      value.toLowerCase().includes(normalizedSearch),
-    );
+    const matchesType = typeFilter === "ALL" || provider.type === typeFilter;
+    const matchesStatus = statusFilter === "ALL" || provider.status === statusFilter;
+
+    return matchesType && matchesStatus;
   });
 
   async function handleCreate(payload: ProviderPayload) {
@@ -241,6 +258,30 @@ export function Providers() {
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
             />
+          </label>
+          <label>
+            Type
+            <select
+              value={typeFilter}
+              onChange={(event) => setTypeFilter(event.target.value as ProviderTypeFilter)}
+            >
+              <option value="ALL">All</option>
+              <option value="PHYSICAL_PERSON">Physical</option>
+              <option value="LEGAL_ENTITY">Legal</option>
+            </select>
+          </label>
+          <label>
+            Status
+            <select
+              value={statusFilter}
+              onChange={(event) =>
+                setStatusFilter(event.target.value as ProviderStatusFilter)
+              }
+            >
+              <option value="ALL">All</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+            </select>
           </label>
         </div>
 

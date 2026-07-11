@@ -235,6 +235,9 @@ label {
 }
 
 .toolbar {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 2fr 1fr 1fr;
   border: 1px solid #d8dee8;
   border-radius: 8px;
   background: #ffffff;
@@ -360,6 +363,10 @@ tbody tr:last-child td {
   }
 
   .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar {
     grid-template-columns: 1fr;
   }
 }

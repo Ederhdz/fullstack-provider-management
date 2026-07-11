@@ -287,15 +287,23 @@ table {
 th,
 td {
   border-bottom: 1px solid #e6eaf0;
-  padding: 12px 14px;
+  padding: 16px 14px;
   text-align: left;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 th {
   background: #f8fafc;
   color: #475467;
   font-size: 13px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+td {
+  color: #293548;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 tbody tr:last-child td {
@@ -322,10 +330,44 @@ tbody tr:last-child td {
   color: #475467;
 }
 
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 26px;
+  padding: 0 10px;
+}
+
+.type-badge.physical_person {
+  background: #e8f1ff;
+  color: #175cd3;
+}
+
+.type-badge.legal_entity {
+  background: #fff4e5;
+  color: #b54708;
+}
+
 .table-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  min-height: 36px;
+  padding: 0;
+  width: 36px;
+}
+
+.icon-button svg {
+  fill: currentColor;
+  height: 18px;
+  width: 18px;
 }
 
 @media (max-width: 760px) {

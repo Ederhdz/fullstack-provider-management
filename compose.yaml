@@ -1,0 +1,21 @@
+services:
+  database:
+    image: postgres:17-alpine
+    container_name: provider-management-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: provider_management
+    ports:
+      - "5432:5432"
+    volumes:
+      - provider_management_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d provider_management"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  provider_management_data:

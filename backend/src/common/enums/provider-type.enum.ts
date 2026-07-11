@@ -1,0 +1,4 @@
+export enum ProviderType {
+  PHYSICAL_PERSON = 'PHYSICAL_PERSON',
+  LEGAL_ENTITY = 'LEGAL_ENTITY',
+}

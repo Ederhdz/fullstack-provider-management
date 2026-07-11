@@ -234,6 +234,13 @@ label {
   font-size: 28px;
 }
 
+.toolbar {
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 16px;
+}
+
 .form-panel {
   border: 1px solid #d8dee8;
   border-radius: 8px;

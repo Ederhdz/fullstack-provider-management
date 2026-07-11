@@ -29,6 +29,7 @@ export function Providers() {
   const [isSaving, setIsSaving] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -61,6 +62,17 @@ export function Providers() {
     physical: providers.filter((provider) => provider.type === "PHYSICAL_PERSON").length,
     legal: providers.filter((provider) => provider.type === "LEGAL_ENTITY").length,
   };
+
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const visibleProviders = providers.filter((provider) => {
+    if (!normalizedSearch) {
+      return true;
+    }
+
+    return [provider.businessName, provider.rfc, provider.email].some((value) =>
+      value.toLowerCase().includes(normalizedSearch),
+    );
+  });
 
   async function handleCreate(payload: ProviderPayload) {
     setError("");
@@ -220,6 +232,18 @@ export function Providers() {
           </article>
         </div>
 
+        <div className="toolbar">
+          <label>
+            Buscar
+            <input
+              type="search"
+              placeholder="Nombre, RFC o email"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+          </label>
+        </div>
+
         {isAdmin && isCreating && (
           <section className="form-panel">
             <h3>Nuevo proveedor</h3>
@@ -249,7 +273,7 @@ export function Providers() {
           <div className="loading">Cargando proveedores...</div>
         ) : (
           <ProviderTable
-            providers={providers}
+            providers={visibleProviders}
             canManage={isAdmin}
             isBusy={isSaving}
             onEdit={startEdit}

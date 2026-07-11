@@ -145,6 +145,38 @@ export function Providers() {
     }
   }
 
+  async function handleToggleStatus(provider: Provider) {
+    const nextStatus = provider.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+
+    setError("");
+    setMessage("");
+    setIsSaving(true);
+
+    try {
+      const updatedProvider = await providerService.changeProviderStatus(
+        provider.id,
+        nextStatus,
+      );
+      setProviders((currentProviders) =>
+        currentProviders.map((currentProvider) =>
+          currentProvider.id === updatedProvider.id ? updatedProvider : currentProvider,
+        ),
+      );
+      setMessage("Estatus actualizado correctamente.");
+    } catch (requestError) {
+      if (axios.isAxiosError(requestError)) {
+        setError(
+          requestError.response?.data?.message ??
+            "No fue posible cambiar el estatus del proveedor.",
+        );
+      } else {
+        setError("No fue posible cambiar el estatus del proveedor.");
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   return (
     <main className="page-shell">
       <header className="app-header">
@@ -208,7 +240,7 @@ export function Providers() {
             canManage={isAdmin}
             onEdit={startEdit}
             onDelete={handleDelete}
-            onToggleStatus={() => setMessage("Cambio de estatus pendiente de implementar.")}
+            onToggleStatus={handleToggleStatus}
           />
         )}
       </section>

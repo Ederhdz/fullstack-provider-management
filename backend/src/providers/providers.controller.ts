@@ -1,12 +1,24 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
+import { CommandBus, QueryBus  } from '@nestjs/cqrs';
 import { CreateProviderCommand } from './commands/create-provider.command';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { Provider } from './entities/provider.entity';
+import { GetProvidersQuery } from './queries/get-providers.query';
+import { GetProviderByIdQuery } from './queries/get-provider-by-id.query';
 
 @Controller('providers')
 export class ProvidersController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Post()
   create(@Body() dto: CreateProviderDto): Promise<Provider> {
@@ -18,6 +30,20 @@ export class ProvidersController {
         dto.email,
         dto.phone,
       ),
+    );
+  }
+
+  @Get()
+  findAll(): Promise<Provider[]> {
+    return this.queryBus.execute(new GetProvidersQuery());
+  }
+
+  @Get(':id')
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Provider> {
+    return this.queryBus.execute(
+      new GetProviderByIdQuery(id),
     );
   }
 }

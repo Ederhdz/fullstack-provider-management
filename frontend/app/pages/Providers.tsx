@@ -13,6 +13,7 @@ export function Providers() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -59,6 +60,59 @@ export function Providers() {
     }
   }
 
+  async function handleUpdate(payload: ProviderPayload) {
+    if (!editingProvider) {
+      return;
+    }
+
+    setError("");
+    setMessage("");
+    setIsSaving(true);
+
+    try {
+      const updatedProvider = await providerService.updateProvider(
+        editingProvider.id,
+        payload,
+      );
+      setProviders((currentProviders) =>
+        currentProviders.map((provider) =>
+          provider.id === updatedProvider.id ? updatedProvider : provider,
+        ),
+      );
+      setEditingProvider(null);
+      setMessage("Proveedor actualizado correctamente.");
+    } catch (requestError) {
+      if (axios.isAxiosError(requestError)) {
+        setError(
+          requestError.response?.data?.message ?? "No fue posible actualizar el proveedor.",
+        );
+      } else {
+        setError("No fue posible actualizar el proveedor.");
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  function startCreate() {
+    setError("");
+    setMessage("");
+    setEditingProvider(null);
+    setIsCreating(true);
+  }
+
+  function startEdit(provider: Provider) {
+    setError("");
+    setMessage("");
+    setIsCreating(false);
+    setEditingProvider(provider);
+  }
+
+  function closeForm() {
+    setIsCreating(false);
+    setEditingProvider(null);
+  }
+
   return (
     <main className="page-shell">
       <header className="app-header">
@@ -80,7 +134,7 @@ export function Providers() {
             <p>{isAdmin ? "Acceso administrador" : "Acceso de solo lectura"}</p>
           </div>
           {isAdmin && (
-            <button type="button" onClick={() => setIsCreating(true)}>
+            <button type="button" onClick={startCreate}>
               Nuevo proveedor
             </button>
           )}
@@ -95,8 +149,21 @@ export function Providers() {
             <ProviderForm
               isSubmitting={isSaving}
               submitLabel="Crear proveedor"
-              onCancel={() => setIsCreating(false)}
+              onCancel={closeForm}
               onSubmit={handleCreate}
+            />
+          </section>
+        )}
+
+        {isAdmin && editingProvider && (
+          <section className="form-panel">
+            <h3>Editar proveedor</h3>
+            <ProviderForm
+              initialValues={editingProvider}
+              isSubmitting={isSaving}
+              submitLabel="Guardar cambios"
+              onCancel={closeForm}
+              onSubmit={handleUpdate}
             />
           </section>
         )}
@@ -107,7 +174,7 @@ export function Providers() {
           <ProviderTable
             providers={providers}
             canManage={isAdmin}
-            onEdit={() => setMessage("Edicion pendiente de implementar.")}
+            onEdit={startEdit}
             onDelete={() => setMessage("Eliminacion pendiente de implementar.")}
             onToggleStatus={() => setMessage("Cambio de estatus pendiente de implementar.")}
           />

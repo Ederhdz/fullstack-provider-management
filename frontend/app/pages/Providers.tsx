@@ -7,6 +7,20 @@ import { useAuth } from "../context/AuthContext";
 import * as providerService from "../services/provider.service";
 import type { Provider, ProviderPayload } from "../types/provider";
 
+function getErrorMessage(requestError: unknown, fallback: string) {
+  if (!axios.isAxiosError(requestError)) {
+    return fallback;
+  }
+
+  const message = requestError.response?.data?.message;
+
+  if (Array.isArray(message)) {
+    return message.join(" ");
+  }
+
+  return typeof message === "string" ? message : fallback;
+}
+
 export function Providers() {
   const { user, isAdmin, logout } = useAuth();
   const [providers, setProviders] = useState<Provider[]>([]);
@@ -28,7 +42,7 @@ export function Providers() {
       if (axios.isAxiosError(requestError) && requestError.response?.status === 401) {
         setError("Tu sesion expiro. Inicia sesion nuevamente.");
       } else {
-        setError("No fue posible cargar los proveedores.");
+        setError(getErrorMessage(requestError, "No fue posible cargar los proveedores."));
       }
     } finally {
       setIsLoading(false);
@@ -50,11 +64,7 @@ export function Providers() {
       setIsCreating(false);
       setMessage("Proveedor creado correctamente.");
     } catch (requestError) {
-      if (axios.isAxiosError(requestError)) {
-        setError(requestError.response?.data?.message ?? "No fue posible crear el proveedor.");
-      } else {
-        setError("No fue posible crear el proveedor.");
-      }
+      setError(getErrorMessage(requestError, "No fue posible crear el proveedor."));
     } finally {
       setIsSaving(false);
     }
@@ -82,13 +92,7 @@ export function Providers() {
       setEditingProvider(null);
       setMessage("Proveedor actualizado correctamente.");
     } catch (requestError) {
-      if (axios.isAxiosError(requestError)) {
-        setError(
-          requestError.response?.data?.message ?? "No fue posible actualizar el proveedor.",
-        );
-      } else {
-        setError("No fue posible actualizar el proveedor.");
-      }
+      setError(getErrorMessage(requestError, "No fue posible actualizar el proveedor."));
     } finally {
       setIsSaving(false);
     }
@@ -133,13 +137,7 @@ export function Providers() {
       );
       setMessage("Proveedor eliminado correctamente.");
     } catch (requestError) {
-      if (axios.isAxiosError(requestError)) {
-        setError(
-          requestError.response?.data?.message ?? "No fue posible eliminar el proveedor.",
-        );
-      } else {
-        setError("No fue posible eliminar el proveedor.");
-      }
+      setError(getErrorMessage(requestError, "No fue posible eliminar el proveedor."));
     } finally {
       setIsSaving(false);
     }
@@ -164,14 +162,9 @@ export function Providers() {
       );
       setMessage("Estatus actualizado correctamente.");
     } catch (requestError) {
-      if (axios.isAxiosError(requestError)) {
-        setError(
-          requestError.response?.data?.message ??
-            "No fue posible cambiar el estatus del proveedor.",
-        );
-      } else {
-        setError("No fue posible cambiar el estatus del proveedor.");
-      }
+      setError(
+        getErrorMessage(requestError, "No fue posible cambiar el estatus del proveedor."),
+      );
     } finally {
       setIsSaving(false);
     }
@@ -183,7 +176,7 @@ export function Providers() {
         <div>
           <h1>Providers</h1>
           <p>
-            {user?.name} · {user?.role}
+            {user?.name} - {user?.role}
           </p>
         </div>
         <button className="secondary" type="button" onClick={logout}>
@@ -238,6 +231,7 @@ export function Providers() {
           <ProviderTable
             providers={providers}
             canManage={isAdmin}
+            isBusy={isSaving}
             onEdit={startEdit}
             onDelete={handleDelete}
             onToggleStatus={handleToggleStatus}

@@ -3,6 +3,7 @@ import type { Provider } from "../types/provider";
 type ProviderTableProps = {
   providers: Provider[];
   canManage: boolean;
+  isBusy: boolean;
   onEdit?: (provider: Provider) => void;
   onDelete?: (provider: Provider) => void;
   onToggleStatus?: (provider: Provider) => void;
@@ -21,6 +22,7 @@ const providerStatusLabels: Record<Provider["status"], string> = {
 export function ProviderTable({
   providers,
   canManage,
+  isBusy,
   onEdit,
   onDelete,
   onToggleStatus,
@@ -62,6 +64,7 @@ export function ProviderTable({
                     <button
                       className="secondary"
                       type="button"
+                      disabled={isBusy}
                       onClick={() => onEdit?.(provider)}
                     >
                       Editar
@@ -69,6 +72,7 @@ export function ProviderTable({
                     <button
                       className="secondary"
                       type="button"
+                      disabled={isBusy}
                       onClick={() => onToggleStatus?.(provider)}
                     >
                       {provider.status === "ACTIVE" ? "Desactivar" : "Activar"}
@@ -76,6 +80,7 @@ export function ProviderTable({
                     <button
                       className="danger"
                       type="button"
+                      disabled={isBusy}
                       onClick={() => onDelete?.(provider)}
                     >
                       Eliminar

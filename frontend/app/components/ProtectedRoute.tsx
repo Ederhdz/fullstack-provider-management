@@ -7,7 +7,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoadingSession } = useAuth();
 
   if (isLoadingSession) {
-    return <main className="page-shell">Cargando...</main>;
+    return <main className="route-loading">Cargando...</main>;
   }
 
   if (!isAuthenticated) {

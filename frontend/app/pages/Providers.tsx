@@ -91,6 +91,8 @@ export function Providers() {
 
     return matchesType && matchesStatus;
   });
+  const hasLocalFilters =
+    Boolean(normalizedSearch) || typeFilter !== "ALL" || statusFilter !== "ALL";
 
   async function handleCreate(payload: ProviderPayload) {
     setError("");
@@ -217,7 +219,7 @@ export function Providers() {
             <p>{isAdmin ? "Acceso administrador" : "Acceso de solo lectura"}</p>
           </div>
           {isAdmin && (
-            <button type="button" onClick={startCreate}>
+            <button type="button" disabled={isSaving} onClick={startCreate}>
               Nuevo proveedor
             </button>
           )}
@@ -283,6 +285,9 @@ export function Providers() {
               <option value="INACTIVE">Inactive</option>
             </select>
           </label>
+          <div className="result-count">
+            {visibleProviders.length} de {providers.length} proveedores
+          </div>
         </div>
 
         {isAdmin && isCreating && (
@@ -352,6 +357,11 @@ export function Providers() {
             providers={visibleProviders}
             canManage={isAdmin}
             isBusy={isSaving}
+            emptyMessage={
+              hasLocalFilters
+                ? "No hay proveedores que coincidan con la busqueda o filtros."
+                : "No hay proveedores registrados."
+            }
             onEdit={startEdit}
             onDelete={setProviderToDelete}
             onToggleStatus={handleToggleStatus}

@@ -11,7 +11,9 @@ export default function DashboardRoute() {
     <ProtectedRoute>
       <DashboardLayout title="Dashboard">
         <section className="content-section">
-          <div className="empty-state">Resumen general del sistema.</div>
+          <div className="empty-state">
+            Usa la seccion Providers para consultar y administrar proveedores.
+          </div>
         </section>
       </DashboardLayout>
     </ProtectedRoute>

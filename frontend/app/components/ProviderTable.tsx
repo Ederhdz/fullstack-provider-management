@@ -4,6 +4,7 @@ type ProviderTableProps = {
   providers: Provider[];
   canManage: boolean;
   isBusy: boolean;
+  emptyMessage?: string;
   onEdit?: (provider: Provider) => void;
   onDelete?: (provider: Provider) => void;
   onToggleStatus?: (provider: Provider) => void;
@@ -49,12 +50,13 @@ export function ProviderTable({
   providers,
   canManage,
   isBusy,
+  emptyMessage = "No hay proveedores registrados.",
   onEdit,
   onDelete,
   onToggleStatus,
 }: ProviderTableProps) {
   if (providers.length === 0) {
-    return <div className="empty-state">No hay proveedores registrados.</div>;
+    return <div className="empty-state">{emptyMessage}</div>;
   }
 
   return (

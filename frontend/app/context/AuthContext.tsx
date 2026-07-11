@@ -31,7 +31,8 @@ function isJwtUsable(token: string) {
   }
 
   try {
-    const payload = JSON.parse(window.atob(parts[1])) as { exp?: number };
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const payload = JSON.parse(window.atob(base64)) as { exp?: number };
 
     if (!payload.exp) {
       return true;

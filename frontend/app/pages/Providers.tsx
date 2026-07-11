@@ -113,6 +113,38 @@ export function Providers() {
     setEditingProvider(null);
   }
 
+  async function handleDelete(provider: Provider) {
+    const confirmed = window.confirm(
+      `Eliminar proveedor "${provider.businessName}"? Esta accion no se puede deshacer.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setError("");
+    setMessage("");
+    setIsSaving(true);
+
+    try {
+      await providerService.deleteProvider(provider.id);
+      setProviders((currentProviders) =>
+        currentProviders.filter((currentProvider) => currentProvider.id !== provider.id),
+      );
+      setMessage("Proveedor eliminado correctamente.");
+    } catch (requestError) {
+      if (axios.isAxiosError(requestError)) {
+        setError(
+          requestError.response?.data?.message ?? "No fue posible eliminar el proveedor.",
+        );
+      } else {
+        setError("No fue posible eliminar el proveedor.");
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   return (
     <main className="page-shell">
       <header className="app-header">
@@ -175,7 +207,7 @@ export function Providers() {
             providers={providers}
             canManage={isAdmin}
             onEdit={startEdit}
-            onDelete={() => setMessage("Eliminacion pendiente de implementar.")}
+            onDelete={handleDelete}
             onToggleStatus={() => setMessage("Cambio de estatus pendiente de implementar.")}
           />
         )}

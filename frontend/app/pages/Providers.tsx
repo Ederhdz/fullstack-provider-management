@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 
+import { DashboardLayout } from "../components/DashboardLayout";
 import { ProviderForm } from "../components/ProviderForm";
 import { ProviderTable } from "../components/ProviderTable";
 import { useAuth } from "../context/AuthContext";
@@ -22,7 +23,7 @@ function getErrorMessage(requestError: unknown, fallback: string) {
 }
 
 export function Providers() {
-  const { user, isAdmin, logout } = useAuth();
+  const { isAdmin } = useAuth();
   const [providers, setProviders] = useState<Provider[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -171,19 +172,7 @@ export function Providers() {
   }
 
   return (
-    <main className="page-shell">
-      <header className="app-header">
-        <div>
-          <h1>Providers</h1>
-          <p>
-            {user?.name} - {user?.role}
-          </p>
-        </div>
-        <button className="secondary" type="button" onClick={logout}>
-          Salir
-        </button>
-      </header>
-
+    <DashboardLayout title="Providers">
       <section className="content-section">
         <div className="section-header">
           <div>
@@ -238,6 +227,6 @@ export function Providers() {
           />
         )}
       </section>
-    </main>
+    </DashboardLayout>
   );
 }

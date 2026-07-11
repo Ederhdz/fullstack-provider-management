@@ -1,4 +1,5 @@
 import type { Route } from "./+types/dashboard";
+import { DashboardLayout } from "../components/DashboardLayout";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 
 export function meta({}: Route.MetaArgs) {
@@ -8,7 +9,11 @@ export function meta({}: Route.MetaArgs) {
 export default function DashboardRoute() {
   return (
     <ProtectedRoute>
-      <main className="page-shell">Dashboard</main>
+      <DashboardLayout title="Dashboard">
+        <section className="content-section">
+          <div className="empty-state">Resumen general del sistema.</div>
+        </section>
+      </DashboardLayout>
     </ProtectedRoute>
   );
 }

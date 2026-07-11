@@ -5,14 +5,20 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { CommandBus, QueryBus  } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole } from '../common/enums/user-role.enum';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { CreateProviderCommand } from './commands/create-provider.command';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { Provider } from './entities/provider.entity';
-import { GetProvidersQuery } from './queries/get-providers.query';
 import { GetProviderByIdQuery } from './queries/get-provider-by-id.query';
+import { GetProvidersQuery } from './queries/get-providers.query';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('providers')
 export class ProvidersController {
   constructor(
@@ -21,6 +27,7 @@ export class ProvidersController {
   ) {}
 
   @Post()
+  @Roles(UserRole.ADMIN)
   create(@Body() dto: CreateProviderDto): Promise<Provider> {
     return this.commandBus.execute(
       new CreateProviderCommand(

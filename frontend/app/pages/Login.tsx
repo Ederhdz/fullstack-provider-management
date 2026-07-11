@@ -35,9 +35,9 @@ export function Login() {
       navigate("/providers", { replace: true });
     } catch (requestError) {
       if (axios.isAxiosError(requestError) && requestError.response?.status === 401) {
-        setError("Credenciales inválidas.");
+        setError("Credenciales invalidas.");
       } else {
-        setError("No fue posible iniciar sesión. Intenta de nuevo.");
+        setError("No fue posible iniciar sesion. Intenta de nuevo.");
       }
     } finally {
       setIsSubmitting(false);
@@ -48,7 +48,7 @@ export function Login() {
     <main className="auth-page">
       <section className="auth-panel">
         <h1>Provider Management</h1>
-        <p>Inicia sesión para administrar proveedores.</p>
+        <p>Inicia sesion para administrar proveedores.</p>
 
         <form className="form" onSubmit={handleSubmit(onSubmit)}>
           <label>

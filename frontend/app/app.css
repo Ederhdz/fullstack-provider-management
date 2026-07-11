@@ -208,6 +208,32 @@ label {
   gap: 18px;
 }
 
+.kpi-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.kpi-card {
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.kpi-card span {
+  color: #667085;
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.kpi-card strong {
+  color: #172033;
+  font-size: 28px;
+}
+
 .form-panel {
   border: 1px solid #d8dee8;
   border-radius: 8px;
@@ -323,6 +349,10 @@ tbody tr:last-child td {
   }
 
   .provider-form {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-grid {
     grid-template-columns: 1fr;
   }
 }

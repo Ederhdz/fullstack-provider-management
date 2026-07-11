@@ -54,6 +54,14 @@ export function Providers() {
     void loadProviders();
   }, [loadProviders]);
 
+  const providerMetrics = {
+    total: providers.length,
+    active: providers.filter((provider) => provider.status === "ACTIVE").length,
+    inactive: providers.filter((provider) => provider.status === "INACTIVE").length,
+    physical: providers.filter((provider) => provider.type === "PHYSICAL_PERSON").length,
+    legal: providers.filter((provider) => provider.type === "LEGAL_ENTITY").length,
+  };
+
   async function handleCreate(payload: ProviderPayload) {
     setError("");
     setMessage("");
@@ -188,6 +196,29 @@ export function Providers() {
 
         {message && <div className="alert alert-success">{message}</div>}
         {error && <div className="alert alert-error">{error}</div>}
+
+        <div className="kpi-grid">
+          <article className="kpi-card">
+            <span>Total Providers</span>
+            <strong>{providerMetrics.total}</strong>
+          </article>
+          <article className="kpi-card">
+            <span>Active</span>
+            <strong>{providerMetrics.active}</strong>
+          </article>
+          <article className="kpi-card">
+            <span>Inactive</span>
+            <strong>{providerMetrics.inactive}</strong>
+          </article>
+          <article className="kpi-card">
+            <span>Physical Persons</span>
+            <strong>{providerMetrics.physical}</strong>
+          </article>
+          <article className="kpi-card">
+            <span>Legal Entities</span>
+            <strong>{providerMetrics.legal}</strong>
+          </article>
+        </div>
 
         {isAdmin && isCreating && (
           <section className="form-panel">

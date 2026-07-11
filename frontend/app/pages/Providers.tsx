@@ -37,6 +37,7 @@ export function Providers() {
   const [isSaving, setIsSaving] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
+  const [providerToDelete, setProviderToDelete] = useState<Provider | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<ProviderTypeFilter>("ALL");
   const [statusFilter, setStatusFilter] = useState<ProviderStatusFilter>("ALL");
@@ -155,12 +156,8 @@ export function Providers() {
     setEditingProvider(null);
   }
 
-  async function handleDelete(provider: Provider) {
-    const confirmed = window.confirm(
-      `Eliminar proveedor "${provider.businessName}"? Esta accion no se puede deshacer.`,
-    );
-
-    if (!confirmed) {
+  async function confirmDelete() {
+    if (!providerToDelete) {
       return;
     }
 
@@ -169,10 +166,13 @@ export function Providers() {
     setIsSaving(true);
 
     try {
-      await providerService.deleteProvider(provider.id);
+      await providerService.deleteProvider(providerToDelete.id);
       setProviders((currentProviders) =>
-        currentProviders.filter((currentProvider) => currentProvider.id !== provider.id),
+        currentProviders.filter(
+          (currentProvider) => currentProvider.id !== providerToDelete.id,
+        ),
       );
+      setProviderToDelete(null);
       setMessage("Proveedor eliminado correctamente.");
     } catch (requestError) {
       setError(getErrorMessage(requestError, "No fue posible eliminar el proveedor."));
@@ -310,6 +310,41 @@ export function Providers() {
           </section>
         )}
 
+        {providerToDelete && (
+          <div className="dialog-backdrop" role="presentation">
+            <section
+              aria-labelledby="delete-provider-title"
+              aria-modal="true"
+              className="dialog"
+              role="dialog"
+            >
+              <h3 id="delete-provider-title">Eliminar proveedor</h3>
+              <p>
+                Confirma que deseas eliminar "{providerToDelete.businessName}". Esta
+                accion no se puede deshacer.
+              </p>
+              <div className="form-actions">
+                <button
+                  className="danger"
+                  type="button"
+                  disabled={isSaving}
+                  onClick={confirmDelete}
+                >
+                  {isSaving ? "Eliminando..." : "Eliminar"}
+                </button>
+                <button
+                  className="secondary"
+                  type="button"
+                  disabled={isSaving}
+                  onClick={() => setProviderToDelete(null)}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </section>
+          </div>
+        )}
+
         {isLoading ? (
           <div className="loading">Cargando proveedores...</div>
         ) : (
@@ -318,7 +353,7 @@ export function Providers() {
             canManage={isAdmin}
             isBusy={isSaving}
             onEdit={startEdit}
-            onDelete={handleDelete}
+            onDelete={setProviderToDelete}
             onToggleStatus={handleToggleStatus}
           />
         )}

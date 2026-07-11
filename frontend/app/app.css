@@ -261,6 +261,32 @@ label {
   gap: 10px;
 }
 
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(16 24 40 / 45%);
+  padding: 18px;
+  z-index: 10;
+}
+
+.dialog {
+  width: min(100%, 420px);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 22px;
+}
+
+.dialog h3 {
+  margin: 0 0 10px;
+}
+
+.dialog p {
+  color: #667085;
+  margin: 0 0 18px;
+}
+
 .loading,
 .empty-state {
   border: 1px solid #d8dee8;

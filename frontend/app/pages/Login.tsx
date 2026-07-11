@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Navigate, useLocation, useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 import axios from "axios";
 
 import { useAuth } from "../context/AuthContext";
@@ -8,7 +8,6 @@ import type { LoginCredentials } from "../types/auth";
 
 export function Login() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { isAuthenticated, login } = useAuth();
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,10 +32,7 @@ export function Login() {
 
     try {
       await login(values);
-      const redirectTo =
-        typeof location.state?.from === "string" ? location.state.from : "/providers";
-
-      navigate(redirectTo, { replace: true });
+      navigate("/providers", { replace: true });
     } catch (requestError) {
       if (axios.isAxiosError(requestError) && requestError.response?.status === 401) {
         setError("Credenciales invalidas.");
